@@ -1,6 +1,6 @@
 import binascii
 
-in_file = open("out.bin", "rb") 
+in_file = open("index.jpg", "rb") 
 count=0
 mem=0
 print(f"{mem:#0{6}x}",end="    ")
