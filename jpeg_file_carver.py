@@ -4,12 +4,13 @@ class JPEG_FileCarver:
     def __init__(self,pointer): #constructor take a pointer passed externally
         self.pointer=pointer #initializing it as a attribute of the object
 
-        
+    
     def carve(self,n=10): # n is the number of iterations to be run
         stage=0 # shows which stage the string match is on
         image_count=0 #stores number of images found from the dump
         image_start_sig=0 #tells wether the footer has been scanned or not
         image_data=None
+        extracted_files = {} #stores the extracted jpg files
         while True:
             
             data=self.pointer.read(1) #reads a byte of data
@@ -47,15 +48,15 @@ class JPEG_FileCarver:
                         image_count+=1 #increment counter
                         image_start_sig=0
                         stage=0
-                        out_file = open("out"+str(image_count)+".jpg", "wb")
+                        out_file = open("./extracted/jpeg/out"+str(image_count)+".jpg", "wb")
                         out_file.write(image_data)
                         out_file.close()
+                        extracted_files[image_count] = image_data
                         image_data=None
                     else:
                         stage=0#go back to initial stage
 
-        return image_count
-
+        return image_count,extracted_files
 
                 
                     
