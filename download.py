@@ -9,14 +9,18 @@ def download(image_count,filetype):
         print(image_count)
         with st.expander('Extracted Files:',expanded=True):
             for i in range(image_count):
-                file = open(f'./extracted/{filetype}/out{i+1}.{filetype}','rb')
-                out = file.read()
-                st.image(out,width=500)
-                st.download_button(
-                    label="Download",
-                    data=out,
-                    file_name=f'out{i+1}.jpeg',
-                )
-                file.close()
+                # st.write(f'File number: {i+1}')
+                try:
+                    file = open(f'./extracted/{filetype}/out{i+1}.{filetype}','rb')
+                    out = file.read()
+                    st.image(out,width=500)
+                    st.download_button(
+                        label="Download",
+                        data=out,
+                        file_name=f'out{i+1}.jpeg',
+                    )
+                    file.close()
+                except:
+                    pass
                 # os.remove(f'./extracted/jpeg/out{i+1}.jpg')
                 

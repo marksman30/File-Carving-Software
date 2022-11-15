@@ -12,9 +12,9 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded")
 
-def num_imgs():
+def num_imgs(filetype):
     n=0
-    for path in pathlib.Path("./extracted/jpg/").iterdir():
+    for path in pathlib.Path(f"./extracted/{filetype}/").iterdir():
         if path.is_file():
             n += 1
     return n
@@ -31,15 +31,18 @@ st.title("""
 choice = st.sidebar.selectbox("Menu", menu)
 uploaded_file = st.file_uploader("Choose a Dump file")
 
-if choice == 'JPEG':
-    for path in pathlib.Path("./extracted/jpg/").iterdir():
-        if path.is_file():
-            image_count += 1
+
+                
+if uploaded_file is not None:
+    if choice == 'JPEG':
+        for path in pathlib.Path("./extracted/jpg/").iterdir():
+            if path.is_file():
+                image_count += 1
     
     
-    image_count = num_imgs()
+        image_count = num_imgs('jpg')
     
-    if uploaded_file is not None:
+    
         download(image_count,'jpg')
         if st.button("Extract"):
         
@@ -52,29 +55,23 @@ if choice == 'JPEG':
                 choice="Download"
                 download(image_count,'jpg')
     else:
-            image_count = num_imgs()
-            for i in range(image_count):
-                os.remove(f'./extracted/jpg/out{i+1}.jpg') 
-else:
-    image_count=0
-    for path in pathlib.Path("./extracted/bmp/").iterdir():
-        if path.is_file():
-            image_count += 1
-    
-    if uploaded_file is not None:
-        download(image_count,'bmp')
-        if st.button("Extract"):
+            image_count=num_imgs('bmp')    
+            download(image_count,'bmp')
+            if st.button("Extract"):
         
-            carver=BMP_FileCarver(uploaded_file)
-            # print(carver.carve())
-            image_count = carver.carve()
-            print(image_count)
-            if image_count==0:
-                st.write('No bmp files found')
-            else:
-                choice="Download"
-                download(image_count,'bmp')
-    else:
-            image_count = num_imgs()
-            for i in range(image_count):
-                os.remove(f'./extracted/bmp/out{i+1}.jpg') 
+                carver=BMP_FileCarver(uploaded_file)
+                # print(carver.carve())
+                image_count = carver.carve()
+                print(image_count)
+                if image_count==0:
+                    st.write('No bmp files found')
+                else:
+                    choice="Download"
+                    download(image_count,'bmp') 
+else:
+        image_count = num_imgs('jpg')
+        for i in range(image_count):
+            os.remove(f'./extracted/jpg/out{i+1}.jpg') 
+        image_count = num_imgs('bmp')
+        for i in range(image_count):
+            os.remove(f'./extracted/bmp/out{i+1}.bmp') 

@@ -21,14 +21,14 @@ class BMP_FileCarver:
                 if stage==0:
                     
                     if match(data,'42'):
-                        print("hello1")
+                        # print("hello1")
                         stage=1 #first header byte found move on to stage 1
                         image_data=data
                         continue
 
                 elif stage==1:
                      if match(data,'4d'): #second header byte found move on to stage 2
-                        print("hello2")
+                        # print("hello2")
                         stage=0 
                         image_data+=data
                         image_start_sig=1
@@ -39,7 +39,7 @@ class BMP_FileCarver:
                 
             else: #2 stage process
                  if stage==0:
-                     print("hello")
+                    #  print("hello")
                      size_data=data
                      image_data+=data
                      stage=1
@@ -52,7 +52,7 @@ class BMP_FileCarver:
                      image_data+=data
                      stage=3   
                  elif stage==3:
-                     print("hello")
+                    #  print("hello")
                    
                      size_data=data+size_data
                    
@@ -61,20 +61,15 @@ class BMP_FileCarver:
                      image_start_sig=0
                      print(size_data)
                      size= int.from_bytes(size_data, byteorder='big')- 6
+                     print('xxx')
                      print(size)
                      
                      image_data= image_data + self.pointer.read(size) 
-                     image_count+=image_count+1 
+                     image_count=image_count+1 
                      out_file = open("./extracted/bmp/out"+str(image_count)+".bmp", "wb")
                      out_file.write(image_data)
                      out_file.close()
                      image_data=None
                      size_data=None
-
-                 
-                
-                
-                
-                
 
         return image_count
