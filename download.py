@@ -9,7 +9,7 @@ def download(image_count):
             for i in range(image_count):
                 file = open(f'./extracted/jpeg/out{i+1}.jpg','rb')
                 out = file.read()
-                st.image(out)
+                st.image(out,width=500)
                 st.download_button(
                     label="Download",
                     data=out,

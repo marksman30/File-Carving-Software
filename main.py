@@ -27,15 +27,16 @@ for path in pathlib.Path("./extracted/jpeg/").iterdir():
 choice = st.sidebar.selectbox("Menu", menu)
 
 if choice == 'JPEG':
-    st.markdown('<img src="https://internetivo.com/ux/images/df/digital-forensics.gif"/> ', unsafe_allow_html=True)
+    st.markdown('<img width=300 height=300  src="https://internetivo.com/ux/images/df/digital-forensics.gif"/> ', unsafe_allow_html=True)
 
     st.title("""
     Welcome to JPGE ,BMP File Craver
 """)
     uploaded_file = st.file_uploader("Choose a Dump file")
     image_count = num_imgs()
-    download(image_count)
+    
     if uploaded_file is not None:
+        download(image_count)
         if st.button("Extract"):
         
             carver=JPEG_FileCarver(uploaded_file)
