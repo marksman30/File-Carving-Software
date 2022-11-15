@@ -2,6 +2,7 @@ import streamlit as st
 import os.path
 import pathlib
 from jpeg_file_carver import JPEG_FileCarver
+from bmp_file_carver import BMP_FileCarver
 import pandas as pd
 from download import download
 
@@ -13,7 +14,7 @@ st.set_page_config(
 
 def num_imgs():
     n=0
-    for path in pathlib.Path("./extracted/jpeg/").iterdir():
+    for path in pathlib.Path("./extracted/jpg/").iterdir():
         if path.is_file():
             n += 1
     return n
@@ -21,36 +22,59 @@ def num_imgs():
 extract_clicked = False
 menu = ["JPEG","BMP"]
 image_count = 0
-for path in pathlib.Path("./extracted/jpeg/").iterdir():
-    if path.is_file():
-        image_count += 1
-choice = st.sidebar.selectbox("Menu", menu)
+st.markdown('<img width=300 height=300  src="https://internetivo.com/ux/images/df/digital-forensics.gif"/> ', unsafe_allow_html=True)
 
-if choice == 'JPEG':
-    st.markdown('<img width=300 height=300  src="https://internetivo.com/ux/images/df/digital-forensics.gif"/> ', unsafe_allow_html=True)
-
-    st.title("""
+st.title("""
     Welcome to JPGE ,BMP File Craver
 """)
-    uploaded_file = st.file_uploader("Choose a Dump file")
+    
+choice = st.sidebar.selectbox("Menu", menu)
+uploaded_file = st.file_uploader("Choose a Dump file")
+
+if choice == 'JPEG':
+    for path in pathlib.Path("./extracted/jpg/").iterdir():
+        if path.is_file():
+            image_count += 1
+    
+    
     image_count = num_imgs()
     
     if uploaded_file is not None:
-        download(image_count)
+        download(image_count,'jpg')
         if st.button("Extract"):
         
             carver=JPEG_FileCarver(uploaded_file)
             # print(carver.carve())
-            image_count,extracted = carver.carve()
+            image_count = carver.carve()
             if image_count==0:
                 st.write('No jpeg files found')
             else:
                 choice="Download"
-                download(image_count)
+                download(image_count,'jpg')
     else:
             image_count = num_imgs()
             for i in range(image_count):
-                os.remove(f'./extracted/jpeg/out{i+1}.jpg') 
+                os.remove(f'./extracted/jpg/out{i+1}.jpg') 
 else:
-    pass
-                    
+    image_count=0
+    for path in pathlib.Path("./extracted/bmp/").iterdir():
+        if path.is_file():
+            image_count += 1
+    
+    if uploaded_file is not None:
+        download(image_count,'bmp')
+        if st.button("Extract"):
+        
+            carver=BMP_FileCarver(uploaded_file)
+            # print(carver.carve())
+            image_count = carver.carve()
+            print(image_count)
+            if image_count==0:
+                st.write('No bmp files found')
+            else:
+                choice="Download"
+                download(image_count,'bmp')
+    else:
+            image_count = num_imgs()
+            for i in range(image_count):
+                os.remove(f'./extracted/bmp/out{i+1}.jpg') 

@@ -48,15 +48,14 @@ class JPEG_FileCarver:
                         image_count+=1 #increment counter
                         image_start_sig=0
                         stage=0
-                        out_file = open("./extracted/jpeg/out"+str(image_count)+".jpg", "wb")
+                        out_file = open("./extracted/jpg/out"+str(image_count)+".jpg", "wb")
                         out_file.write(image_data)
                         out_file.close()
-                        extracted_files[image_count] = image_data
                         image_data=None
                     else:
                         stage=0#go back to initial stage
 
-        return image_count,extracted_files
+        return image_count
 
                 
                     

@@ -1,13 +1,15 @@
 import streamlit as st
 import os
 
-def download(image_count):
+def download(image_count,filetype):
     if image_count == 0:
-        st.write("JPEG files not found")
+        # st.write("JPEG files not found")
+        pass
     else:
+        print(image_count)
         with st.expander('Extracted Files:',expanded=True):
             for i in range(image_count):
-                file = open(f'./extracted/jpeg/out{i+1}.jpg','rb')
+                file = open(f'./extracted/{filetype}/out{i+1}.{filetype}','rb')
                 out = file.read()
                 st.image(out,width=500)
                 st.download_button(
