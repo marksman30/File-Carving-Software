@@ -27,8 +27,11 @@ class JPEG_FileCarver:
                         stage=2 
                         image_data+=data
                     else:
-                        stage=0 #if required byte not found move to initial stage (stage 0)
-                        image_data=None
+                        if match(data,'ff'):
+                            stage=1
+                        else:
+                            stage=0 #if required byte not found move to initial stage (stage 0)
+                            image_data=None
                 elif stage==2:
                     if match(data,'ff'): #third header byte found change image_start signal
                         image_start_sig=1
@@ -53,6 +56,8 @@ class JPEG_FileCarver:
                         out_file.close()
                         image_data=None
                     else:
+                        if match(data,'ff'):
+                            stage=1
                         stage=0#go back to initial stage
 
         return image_count
