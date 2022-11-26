@@ -34,8 +34,11 @@ class BMP_FileCarver:
                         image_start_sig=1
                         
                      else:
-                        stage=0 #if required byte not found move to initial stage (stage 0)
-                        image_data=None
+                        if match(data,'42'):
+                            stage=1 
+                        else:
+                            stage=0 #if required byte not found move to initial stage (stage 0)
+                            image_data=None
                 
             else: #2 stage process
                  if stage==0:
