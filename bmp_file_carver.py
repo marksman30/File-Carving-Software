@@ -12,16 +12,21 @@ class BMP_FileCarver:
         image_data=None
         size_data=None
         size=None
+        temporary_pointer_pos=None
+   
         while True:
             
             data=self.pointer.read(1) #reads a byte of data
             if not data: #end the loop if no other bytes left to search
+               
                 break
             if image_start_sig==0: #footer is yet to be found need to pass through 3 stages
                 if stage==0:
                     
                     if match(data,'42'):
                         # print("hello1")
+                        temporary_pointer_pos=self.pointer.tell()
+                        # print(temporary_pointer)
                         stage=1 #first header byte found move on to stage 1
                         image_data=data
                         continue
@@ -32,17 +37,21 @@ class BMP_FileCarver:
                         stage=0 
                         image_data+=data
                         image_start_sig=1
+                  
                         
                      else:
                         if match(data,'42'):
                             stage=1 
+                            temporary_pointer_pos=self.pointer.tell()
                         else:
                             stage=0 #if required byte not found move to initial stage (stage 0)
                             image_data=None
+                            self.pointer.seek(temporary_pointer_pos)
+                           
                 
             else: #2 stage process
                  if stage==0:
-                    #  print("hello")
+                  
                      size_data=data
                      image_data+=data
                      stage=1
@@ -62,17 +71,25 @@ class BMP_FileCarver:
                      image_data+=data
                      stage=0
                      image_start_sig=0
-                     print(size_data)
+                
                      size= int.from_bytes(size_data, byteorder='big')- 6
-                     print('xxx')
-                     print(size)
+                
+                     buff_data=None
                      
-                     image_data= image_data + self.pointer.read(size) 
+                     try:
+                        image_data= image_data + self.pointer.read(size)
+                     except:
+                        self.pointer.seek(temporary_pointer_pos) 
+                        image_data=None
+                        size_data=None
+                        continue
                      image_count=image_count+1 
                      out_file = open("./extracted/bmp/out"+str(image_count)+".bmp", "wb")
                      out_file.write(image_data)
                      out_file.close()
                      image_data=None
                      size_data=None
+                     self.pointer.seek(temporary_pointer_pos)
+                  
 
         return image_count
